@@ -7,6 +7,8 @@ const GeneralContext = React.createContext({
   closeBuyWindow: () => {},
 });
 
+
+
 export const GeneralContextProvider = (props) => {
   const [isBuyWindowOpen, setIsBuyWindowOpen] = useState(false);
   const [selectedStockUID, setSelectedStockUID] = useState("");

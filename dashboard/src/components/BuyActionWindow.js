@@ -8,16 +8,38 @@ import GeneralContext from "./GeneralContext";
 import "./BuyActionWindow.css";
 
 const BuyActionWindow = ({ uid }) => {
+
   const [stockQuantity, setStockQuantity] = useState(1);
   const [stockPrice, setStockPrice] = useState(0.0);
 
   const handleBuyClick = () => {
-    axios.post("http://localhost:3002/newOrder", {
-      name: uid,
-      qty: stockQuantity,
-      price: stockPrice,
-      mode: "BUY",
-    });
+
+    try {
+      axios.post("http://localhost:3002/newOrder", {
+        name: uid,
+        qty: stockQuantity,
+        price: stockPrice,
+        model: "BUY",
+      });
+      const prevClose = stockPrice * 0.97; // You can replace this with actual API or a mock value
+
+    const net = ((stockPrice - stockPrice) / stockPrice) * 100;
+    const day = ((stockPrice - prevClose) / prevClose) * 100;
+
+
+      axios.post("http://localhost:3002/newDataHolding", {
+        name: uid,       
+        qty: stockQuantity,
+        avg: stockPrice,
+        price: stockPrice,
+        net: `${net.toFixed(2)}%`,
+        day: `${day.toFixed(2)}%`,
+      });
+
+
+    } catch (error) {
+      console.error("Error during POST requests:", error.message);
+    }
 
     GeneralContext.closeBuyWindow();
   };
